@@ -1,3 +1,9 @@
+/*
+ ------------------------------------------------------------------------------
+ =       334738 - AMÉZQUITA AGUIÑAGA - SALVADOR                               =
+ =       352300 - PADILLA HERNÁNDEZ - RICARDO                                 =
+ ------------------------------------------------------------------------------
+ */
 #include <iostream>
 #include <ctime>
 #include <cstdio>
@@ -76,6 +82,29 @@ bool compararPuntajes(const Puntaje &a, const Puntaje &b) {
     return a.puntaje > b.puntaje;
 }
 
+/*========================================= PROTOTIPOS   =================================================*
+*                                                                                                         *
+* ========================================================================================================*/
+bool compararPuntajes(const Puntaje &a, const Puntaje &b);
+ALLEGRO_COLOR obtenerColor(Colores color);
+void dibujarMatriz(int filaCursor, int colCursor, Casilla* casillas, ALLEGRO_BITMAP* background, int nivel, int puntaje, const char* nombreUsuario, ALLEGRO_FONT* font, bool mostrarCursor = true, bool mostrarMensajeCorrecto = false, ALLEGRO_BITMAP* gif_frame = NULL);
+void draw_menu(ALLEGRO_FONT* font, int selected_option, ALLEGRO_BITMAP* background, ALLEGRO_BITMAP* logo, ALLEGRO_BITMAP* gif_frame = NULL);
+void draw_options_menu(ALLEGRO_FONT* font, int selected_option, ALLEGRO_BITMAP* background, bool mute_music, bool mute_effects);
+void draw_help_menu(ALLEGRO_FONT* font, ALLEGRO_FONT* small_font, ALLEGRO_BITMAP* background);
+void draw_ranking_menu(ALLEGRO_FONT* font, ALLEGRO_FONT* small_font, ALLEGRO_BITMAP* background, const vector<Puntaje>& rankings);
+int* generarSecuencia(int longitud);
+int obtenerTecla(ALLEGRO_EVENT_QUEUE* event_queue);
+int* obtenerSecuenciaUsuario(int longitud, Casilla* casillas, ALLEGRO_BITMAP* background, int nivel, int puntaje, const char* nombreUsuario, ALLEGRO_FONT* font, ALLEGRO_EVENT_QUEUE* event_queue, ALLEGRO_SAMPLE** color_sounds, bool mute_effects, ALLEGRO_BITMAP* gif_frame = NULL);
+bool compararSecuencias(int* secuencia, int* secuenciaUsuario, int longitud);
+void guardarPuntaje(const char* nombre, int puntaje);
+vector<Puntaje> cargarPuntajes();
+string obtenerNombreUsuario(ALLEGRO_FONT* font, ALLEGRO_BITMAP* background, ALLEGRO_EVENT_QUEUE* event_queue);
+void jugarNivel(int nivel, Casilla* casillas, ALLEGRO_FONT* font, ALLEGRO_BITMAP* background, ALLEGRO_EVENT_QUEUE* event_queue, int& puntaje, const char* nombreUsuario, ALLEGRO_SAMPLE** color_sounds, bool mute_effects, ALLEGRO_BITMAP* gif_frame = NULL);
+void ajustarVolumenMusica(ALLEGRO_SAMPLE_INSTANCE* music_instance, float volumen);
+
+/*==========================================Inicio del programa===========================================*
+*                                                                                                         *
+* ========================================================================================================*/
 // Funcion para obtener el color utilizando la enumeración de colores (allegro)
 ALLEGRO_COLOR obtenerColor(Colores color) {
     switch (color) {

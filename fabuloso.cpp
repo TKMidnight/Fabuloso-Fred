@@ -14,13 +14,13 @@
 
 using namespace std;
 
-#define NUM_CASILLAS 3 // Numero de casillas en cada dimension de la matriz
-#define MAX_NIVELES 9 // Numero maximo de niveles
-#define BUTTON_SIZE 80 // Tamano de cada boton
-#define BUTTON_SPACING 30 // Espaciado entre botones
-#define MATRIX_SIZE (NUM_CASILLAS * (BUTTON_SIZE + BUTTON_SPACING)) // Tamano total de la matriz
+#define NUM_CASILLAS 3
+#define MAX_NIVELES 9
+#define BUTTON_SIZE 80
+#define BUTTON_SPACING 30
+#define MATRIX_SIZE (NUM_CASILLAS * (BUTTON_SIZE + BUTTON_SPACING))
 
-// Enumeracion de colores
+// Uso de los enums, union y struct
 enum Colores {
     ROJO,
     VERDE,
@@ -34,7 +34,6 @@ enum Colores {
     NEGRO
 };
 
-// Enumeracion de opciones de menu
 enum MenuOption {
     JUGAR,
     OPCIONES,
@@ -44,7 +43,6 @@ enum MenuOption {
     MENU_OPTIONS_COUNT
 };
 
-// Enumeracion de opciones del menu de configuracion
 enum OptionsMenu {
     SILENCIAR_MUSICA,
     SILENCIAR_EFECTOS,
@@ -52,26 +50,22 @@ enum OptionsMenu {
     OPTIONS_MENU_COUNT
 };
 
-// Enumeracion de opciones del menu de ayuda
 enum HelpMenu {
     VOLVER_DE_AYUDA,
     HELP_MENU_COUNT
 };
 
-// Union para representar el estado de una casilla (vacia o seleccionada)
 union EstadoCasilla {
     bool vacia;
     bool seleccionada;
 };
 
-// Estructura de una casilla de la matriz
 struct Casilla {
     int fila;
     int columna;
     Colores color;
 };
 
-// Estructura para almacenar los puntajes de los jugadores
 struct Puntaje {
     char nombre[50];
     int puntaje;
@@ -82,7 +76,7 @@ bool compararPuntajes(const Puntaje &a, const Puntaje &b) {
     return a.puntaje > b.puntaje;
 }
 
-// Función para obtener el color de Allegro correspondiente a la enumeración de colores
+// Funcion para obtener el color utilizando la enumeración de colores (allegro)
 ALLEGRO_COLOR obtenerColor(Colores color) {
     switch (color) {
         case ROJO: return al_map_rgb(255, 85, 85);
@@ -99,18 +93,18 @@ ALLEGRO_COLOR obtenerColor(Colores color) {
     }
 }
 
-// Función para dibujar la matriz de colores en la pantalla
+// Funcion para imprimir la matriz en pantalla
 void dibujarMatriz(int filaCursor, int colCursor, Casilla* casillas, ALLEGRO_BITMAP* background, int nivel, int puntaje, const char* nombreUsuario, ALLEGRO_FONT* font, bool mostrarCursor = true, bool mostrarMensajeCorrecto = false, ALLEGRO_BITMAP* gif_frame = NULL) {
     al_draw_bitmap(background, 0, 0, 0);
 
-    // Obtener el tamaño de la pantalla
+    // Aqui se obtiene el tamano de la pantalla (640x480)
     int display_width = al_get_display_width(al_get_current_display());
     int display_height = al_get_display_height(al_get_current_display());
-    // Calcular la posición inicial de la matriz
+    
     int start_x = (display_width - MATRIX_SIZE) / 2 + BUTTON_SPACING / 2;
     int start_y = (display_height - MATRIX_SIZE) / 2 + BUTTON_SPACING / 2;
 
-    // Dibujar información del nivel y puntaje
+    // Aqui se imprime la info cuando estas jugando (Jugador, Nivel y puntaje)
     if (font) {
         al_draw_textf(font, obtenerColor(BLANCO), display_width / 2, start_y - 90, ALLEGRO_ALIGN_CENTRE, "Jugador: %s", nombreUsuario);
         al_draw_textf(font, obtenerColor(BLANCO), display_width / 2, start_y - 60, ALLEGRO_ALIGN_CENTRE, "Nivel: %d", nivel);
@@ -120,7 +114,7 @@ void dibujarMatriz(int filaCursor, int colCursor, Casilla* casillas, ALLEGRO_BIT
         }
     }
 
-    // Dibujar cada casilla de la matriz
+    // Dibuja cada casilla de la matriz
     for (int i = 0; i < NUM_CASILLAS; i++) {
         for (int j = 0; j < NUM_CASILLAS; j++) {
             int indice = i * NUM_CASILLAS + j;
@@ -130,23 +124,21 @@ void dibujarMatriz(int filaCursor, int colCursor, Casilla* casillas, ALLEGRO_BIT
             int x2 = x1 + BUTTON_SIZE;
             int y2 = y1 + BUTTON_SIZE;
 
-            // Dibujar sombra
+            // sombra de las casillas
             al_draw_filled_rectangle(x1 + 5, y1 + 5, x2 + 5, y2 + 5, obtenerColor(GRIS_OSCURO));
 
-            // Dibujar botón
+            // boton
             al_draw_filled_rectangle(x1, y1, x2, y2, color);
 
-            // Dibujar borde
+            // borde
             al_draw_rectangle(x1, y1, x2, y2, obtenerColor(NEGRO), 4);
 
-            // Dibujar el cursor si está habilitado
             if (i == filaCursor && j == colCursor && mostrarCursor) {
                 al_draw_rectangle(x1 - 4, y1 - 4, x2 + 4, y2 + 4, obtenerColor(AMARILLO), 4); // Cambiar a amarillo para más visibilidad
             }
         }
     }
 
-    // Dibujar el GIF animado si está disponible
     if (gif_frame) {
         al_draw_bitmap(gif_frame, 10, display_height - 110, 0); // Ajustar la posición según sea necesario
     }
@@ -154,16 +146,16 @@ void dibujarMatriz(int filaCursor, int colCursor, Casilla* casillas, ALLEGRO_BIT
     al_flip_display();
 }
 
-// Función para dibujar el menú principal
+// Función para imprimir el menu principal
 void draw_menu(ALLEGRO_FONT* font, int selected_option, ALLEGRO_BITMAP* background, ALLEGRO_BITMAP* logo, ALLEGRO_BITMAP* gif_frame = NULL) {
     al_draw_bitmap(background, 0, 0, 0);
 
-    // Dibujar el logo
+    // Logo
     int logo_width = al_get_bitmap_width(logo);
     int logo_height = al_get_bitmap_height(logo);
     al_draw_bitmap(logo, (640 - logo_width) / 2, 50, 0);
 
-    // Opciones del menú
+    // Opciones del menu
     const char* menu_options[MENU_OPTIONS_COUNT] = {
         "JUGAR",
         "OPCIONES",
@@ -172,13 +164,12 @@ void draw_menu(ALLEGRO_FONT* font, int selected_option, ALLEGRO_BITMAP* backgrou
         "SALIR"
     };
 
-    // Dibujar cada opción del menú
+    // opciones del menu
     for (int i = 0; i < MENU_OPTIONS_COUNT; ++i) {
         ALLEGRO_COLOR color = (i == selected_option) ? obtenerColor(CIAN) : obtenerColor(GRIS_OSCURO); // Cian para la opción seleccionada
         al_draw_text(font, color, 320, (240) + i * 40, ALLEGRO_ALIGN_CENTRE, menu_options[i]);
     }
 
-    // Dibujar la imagen adicional si está disponible
     if (gif_frame) {
         al_draw_bitmap(gif_frame, 10, 380, 0); // Ajustar la posición según sea necesario
     }
@@ -186,22 +177,22 @@ void draw_menu(ALLEGRO_FONT* font, int selected_option, ALLEGRO_BITMAP* backgrou
     al_flip_display();
 }
 
-// Función para dibujar el menú de opciones
+// Funcion para imprimir el menu de opciones
 void draw_options_menu(ALLEGRO_FONT* font, int selected_option, ALLEGRO_BITMAP* background, bool mute_music, bool mute_effects) {
     al_draw_bitmap(background, 0, 0, 0);
 
-    // Opciones del menú de opciones
+    // Opciones del menu de opciones
     const char* options_menu[OPTIONS_MENU_COUNT] = {
         "Silenciar Música: ",
         "Silenciar Efectos: ",
         "Volver"
     };
 
-    // Convertir los estados de silencio a cadenas de caracteres
+    // Converte los estados de silencio a cadenas de caracteres
     string mute_music_str = mute_music ? "Si" : "No";
     string mute_effects_str = mute_effects ? "Si" : "No";
 
-    // Dibujar cada opción del menú de opciones
+    // Imprime cada opción del menú de opciones
     for (int i = 0; i < OPTIONS_MENU_COUNT; ++i) {
         ALLEGRO_COLOR color = (i == selected_option) ? obtenerColor(CIAN) : obtenerColor(GRIS_OSCURO); // Cian para la opción seleccionada
         if (i == SILENCIAR_MUSICA) {
@@ -216,7 +207,7 @@ void draw_options_menu(ALLEGRO_FONT* font, int selected_option, ALLEGRO_BITMAP* 
     al_flip_display();
 }
 
-// Función para dibujar el menú de ayuda
+// Funcion para dibujar el menu de ayuda
 void draw_help_menu(ALLEGRO_FONT* font, ALLEGRO_FONT* small_font, ALLEGRO_BITMAP* background) {
     al_draw_bitmap(background, 0, 0, 0);
 
@@ -241,7 +232,7 @@ void draw_help_menu(ALLEGRO_FONT* font, ALLEGRO_FONT* small_font, ALLEGRO_BITMAP
     al_flip_display();
 }
 
-// Función para dibujar el menú de ranking
+// Funcion para dibujar el menu de ranking
 void draw_ranking_menu(ALLEGRO_FONT* font, ALLEGRO_FONT* small_font, ALLEGRO_BITMAP* background, const vector<Puntaje>& rankings) {
     al_draw_bitmap(background, 0, 0, 0);
 
@@ -261,7 +252,7 @@ void draw_ranking_menu(ALLEGRO_FONT* font, ALLEGRO_FONT* small_font, ALLEGRO_BIT
     al_flip_display();
 }
 
-// Función para generar una secuencia aleatoria de longitud dada
+// Funcion para generar una secuencia aleatoria de longitud dada
 int* generarSecuencia(int longitud) {
     int* secuencia = new int[longitud];
     for (int i = 0; i < longitud; i++) {
@@ -270,7 +261,7 @@ int* generarSecuencia(int longitud) {
     return secuencia;
 }
 
-// Función para obtener la tecla presionada
+// Funcion para obtener la tecla presionada
 int obtenerTecla(ALLEGRO_EVENT_QUEUE* event_queue) {
     ALLEGRO_EVENT ev;
     al_wait_for_event(event_queue, &ev);
@@ -282,14 +273,13 @@ int obtenerTecla(ALLEGRO_EVENT_QUEUE* event_queue) {
     return 0;
 }
 
-// Función para obtener la secuencia ingresada por el usuario
+// Funcion para obtener la secuencia ingresada por el usuario
 int* obtenerSecuenciaUsuario(int longitud, Casilla* casillas, ALLEGRO_BITMAP* background, int nivel, int puntaje, const char* nombreUsuario, ALLEGRO_FONT* font, ALLEGRO_EVENT_QUEUE* event_queue, ALLEGRO_SAMPLE** color_sounds, bool mute_effects, ALLEGRO_BITMAP* gif_frame = NULL) {
     int* secuenciaUsuario = new int[longitud];
 
     int filaCursor = 0, colCursor = 0;
     int contador = 0;
 
-    // Dibujar la matriz sin el cursor
     dibujarMatriz(-1, -1, casillas, background, nivel, puntaje, nombreUsuario, font, false, false, gif_frame);
 
     // Capturar la secuencia del usuario
@@ -320,7 +310,7 @@ int* obtenerSecuenciaUsuario(int longitud, Casilla* casillas, ALLEGRO_BITMAP* ba
     return secuenciaUsuario;
 }
 
-// Función para comparar las secuencias generada y la ingresada por el usuario
+// Funcion para comparar las secuencias generada y la ingresada por el usuario
 bool compararSecuencias(int* secuencia, int* secuenciaUsuario, int longitud) {
     for (int i = 0; i < longitud; i++) {
         if (secuencia[i] != secuenciaUsuario[i]) {
@@ -330,7 +320,7 @@ bool compararSecuencias(int* secuencia, int* secuenciaUsuario, int longitud) {
     return true;
 }
 
-// Función para guardar el puntaje en un archivo de texto
+// Funcion para guardar el puntaje en un archivo de texto
 void guardarPuntaje(const char* nombre, int puntaje) {
     FILE* archivo = fopen("puntajes.txt", "a");
     if (archivo) {
@@ -342,7 +332,7 @@ void guardarPuntaje(const char* nombre, int puntaje) {
     }
 }
 
-// Función para cargar los puntajes desde un archivo de texto
+// Funcion para cargar los puntajes desde un archivo de texto
 vector<Puntaje> cargarPuntajes() {
     vector<Puntaje> rankings;
     FILE* archivo = fopen("puntajes.txt", "r");
@@ -359,7 +349,7 @@ vector<Puntaje> cargarPuntajes() {
     return rankings;
 }
 
-// Función para obtener el nombre del usuario
+// Funcion para obtener el nombre del usuario
 string obtenerNombreUsuario(ALLEGRO_FONT* font, ALLEGRO_BITMAP* background, ALLEGRO_EVENT_QUEUE* event_queue) {
     string nombreUsuario = "";
     ALLEGRO_EVENT ev;
@@ -389,14 +379,14 @@ string obtenerNombreUsuario(ALLEGRO_FONT* font, ALLEGRO_BITMAP* background, ALLE
     return nombreUsuario;
 }
 
-// Función para jugar un nivel
+// Funcion para jugar un nivel
 void jugarNivel(int nivel, Casilla* casillas, ALLEGRO_FONT* font, ALLEGRO_BITMAP* background, ALLEGRO_EVENT_QUEUE* event_queue, int& puntaje, const char* nombreUsuario, ALLEGRO_SAMPLE** color_sounds, bool mute_effects, ALLEGRO_BITMAP* gif_frame = NULL) {
     srand(time(0));
     int* secuencia = generarSecuencia(nivel);
 
     cout << "Nivel " << nivel << "!" << endl;
 
-    al_rest(2.0); // Pausa de 2 segundos antes de empezar
+    al_rest(2.0);
 
     // Mostrar la secuencia al usuario
     for (int i = 0; i < nivel; i++) {
@@ -406,7 +396,7 @@ void jugarNivel(int nivel, Casilla* casillas, ALLEGRO_FONT* font, ALLEGRO_BITMAP
 
         if (!mute_effects) al_play_sample(color_sounds[casillas[casilla].color], 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         dibujarMatriz(fila, col, casillas, background, nivel, puntaje, nombreUsuario, font, true, false, gif_frame);
-        al_rest(1.0); // Pausa de 1 segundo
+        al_rest(1.0);
     }
 
     dibujarMatriz(0, 0, casillas, background, nivel, puntaje, nombreUsuario, font, true, false, gif_frame);
@@ -417,7 +407,7 @@ void jugarNivel(int nivel, Casilla* casillas, ALLEGRO_FONT* font, ALLEGRO_BITMAP
         cout << "¡Correcto!" << endl;
         puntaje += 100; // Cada nivel vale 100 puntos
         dibujarMatriz(0, 0, casillas, background, nivel, puntaje, nombreUsuario, font, true, true, gif_frame);
-        al_rest(1.0); // Pausa para mostrar el mensaje "¡Correcto!"
+        al_rest(1.0);
     } else {
         cout << "Incorrecto. La secuencia correcta era: ";
         for (int i = 0; i < nivel; i++) {
@@ -433,14 +423,14 @@ void jugarNivel(int nivel, Casilla* casillas, ALLEGRO_FONT* font, ALLEGRO_BITMAP
     delete[] secuenciaUsuario;
 }
 
-// Función para ajustar el volumen de la música
+// Funcion para ajustar el volumen de la música
 void ajustarVolumenMusica(ALLEGRO_SAMPLE_INSTANCE* music_instance, float volumen) {
     al_set_sample_instance_gain(music_instance, volumen);
 }
 
-// Función principal
+// El main
 int main() {
-    // Inicializar Allegro y sus addons
+    // Iniciar Allegro y sus adiciones
     if (!al_init()) {
         fprintf(stderr, "Failed to initialize Allegro.\n");
         return -1;
@@ -486,7 +476,7 @@ int main() {
         return -1;
     }
 
-    // Crear la ventana de visualización
+    // Crear la ventana de visualizacion
     ALLEGRO_DISPLAY* display = al_create_display(640, 480);
     if (!display) {
         fprintf(stderr, "Failed to create display.\n");
@@ -509,7 +499,7 @@ int main() {
         return -1;
     }
 
-    // Cargar imágenes
+    // Cargar imagenes
     ALLEGRO_BITMAP* background = al_load_bitmap("background.png");
     if (!background) {
         fprintf(stderr, "Failed to load background image.\n");
@@ -540,7 +530,7 @@ int main() {
         return -1;
     }
 
-    // Cargar música y sonidos
+    // Cargar musica y sonidos
     ALLEGRO_SAMPLE* music = al_load_sample("music.ogg");
     if (!music) {
         fprintf(stderr, "Failed to load music.\n");
@@ -689,8 +679,9 @@ int main() {
     bool mute_effects = false;
     bool show_gif = false;
 
-    // Obtener el nombre del usuario antes de mostrar el menú
+    // Obtener el nombre del usuario antes de mostrar el menu
     nombreUsuario = obtenerNombreUsuario(font, background, event_queue);
+    // Easter egg de bonzi
     if (nombreUsuario == "bonzi") {
         show_gif = true;
     }
@@ -761,7 +752,7 @@ int main() {
                         if (selected_option == SALIR) {
                             do_exit = true;
                         } else if (selected_option == JUGAR) {
-                            // Reducir el volumen de la música antes de comenzar a jugar
+                            // Reducir el volumen de la musica antes de comenzar a jugar
                             ajustarVolumenMusica(music_instance, 0.3);
 
                             // Definir las casillas de la matriz
@@ -771,7 +762,7 @@ int main() {
                                 {2, 0, BLANCO}, {2, 1, GRIS_OSCURO}, {2, 2, NARANJA}
                             };
 
-                            // Inicializar nivel y puntaje
+                            // Iniciar nivel y puntaje
                             int nivel = 1;
                             int puntaje = 0;
                             try {
@@ -791,7 +782,7 @@ int main() {
                             // Cargar los puntajes actualizados
                             rankings = cargarPuntajes();
 
-                            // Restaurar el volumen de la música después de jugar
+                            // Restaurar el volumen de la musica después de jugar
                             ajustarVolumenMusica(music_instance, 1.0);
                         } else if (selected_option == OPCIONES) {
                             in_options_menu = true;

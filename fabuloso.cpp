@@ -14,11 +14,11 @@
 
 using namespace std;
 
-#define NUM_CASILLAS 3 // Numero de casillas en cada dimension de la matriz
-#define MAX_NIVELES 9 // Numero maximo de niveles
-#define BUTTON_SIZE 80 // Tamano de cada boton
-#define BUTTON_SPACING 30 // Espaciado entre botones
-#define MATRIX_SIZE (NUM_CASILLAS * (BUTTON_SIZE + BUTTON_SPACING)) // Tamano total de la matriz
+#define NUM_CASILLAS 3
+#define MAX_NIVELES 9
+#define BUTTON_SIZE 80
+#define BUTTON_SPACING 30
+#define MATRIX_SIZE (NUM_CASILLAS * (BUTTON_SIZE + BUTTON_SPACING))
 
 // Uso de enums, union y structs
 enum Colores {

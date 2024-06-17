@@ -77,12 +77,7 @@ struct Puntaje {
     int puntaje;
 };
 
-// Función para comparar puntajes
-bool compararPuntajes(const Puntaje &a, const Puntaje &b) {
-    return a.puntaje > b.puntaje;
-}
-
-/*========================================= PROTOTIPOS   =================================================*
+/*==========================================PROTOTIPOS====================================================*
 *                                                                                                         *
 * ========================================================================================================*/
 bool compararPuntajes(const Puntaje &a, const Puntaje &b);
@@ -105,6 +100,11 @@ void ajustarVolumenMusica(ALLEGRO_SAMPLE_INSTANCE* music_instance, float volumen
 /*==========================================Inicio del programa===========================================*
 *                                                                                                         *
 * ========================================================================================================*/
+// Función para comparar puntajes
+bool compararPuntajes(const Puntaje &a, const Puntaje &b) {
+    return a.puntaje > b.puntaje;
+}
+
 // Funcion para obtener el color utilizando la enumeración de colores (allegro)
 ALLEGRO_COLOR obtenerColor(Colores color) {
     switch (color) {
